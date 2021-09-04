@@ -83,12 +83,12 @@ void loop()
       Serial.print("RSSI: ");
       Serial.println(rf95.lastRssi(), DEC);
 
-      // Send a reply
-      uint8_t data[] = "And hello back to you";
-      rf95.send(data, sizeof(data));
-      rf95.waitPacketSent();
-      Serial.println("Sent a reply");
-      digitalWrite(LED, LOW);
+//      // Send a reply
+//      uint8_t data[] = "And hello back to you";
+//      rf95.send(data, sizeof(data));
+//      rf95.waitPacketSent();
+//      Serial.println("Sent a reply");
+//      digitalWrite(LED, LOW);
     }
     else
     {
