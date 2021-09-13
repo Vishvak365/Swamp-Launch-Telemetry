@@ -87,4 +87,5 @@ void loop()
 
   delay(10);
   rf95.waitPacketSent();
+  delay(100);
 }

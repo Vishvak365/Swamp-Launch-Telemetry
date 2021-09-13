@@ -16,11 +16,14 @@ client = influxdb_client.InfluxDBClient(
 )
 
 write_api = client.write_api()
+count = 0
 while True:
     temp = float(random.randint(0, 100))
     p = influxdb_client.Point("my_measurement").tag(
         "location", "Prague").field("temperature", temp).time(time.time_ns())
         # .tag("timestamp", str(time.time_ns()))
+    if(count == 1000):
+        
     write_api.write(bucket=bucket, org=org, record=p,write_precision='ns')
     print("wrote temp", temp)
     time.sleep(.2)
