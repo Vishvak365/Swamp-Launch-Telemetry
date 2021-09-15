@@ -1,7 +1,13 @@
 import influxdb_client
-import time
+from influxdb_client import InfluxDBClient, Point, WritePrecision
 import random
+import time
 from influxdb_client.client.write_api import SYNCHRONOUS
+from datetime import datetime
+
+import serial
+ser = serial.Serial('/dev/cu.usbserial-110', 9600)
+
 bucket = "vishvak1"
 org = "vishvak1"
 # Token not a secret - only access on local
@@ -14,16 +20,13 @@ client = influxdb_client.InfluxDBClient(
     token=token,
     org=org
 )
-
-write_api = client.write_api()
-count = 0
+write_api = client.write_api(write_options=SYNCHRONOUS)
 while True:
-    temp = float(random.randint(0, 100))
-    p = influxdb_client.Point("my_measurement").tag(
-        "location", "Prague").field("temperature", temp).time(time.time_ns())
-        # .tag("timestamp", str(time.time_ns()))
-    if(count == 1000):
-        
-    write_api.write(bucket=bucket, org=org, record=p,write_precision='ns')
-    print("wrote temp", temp)
-    time.sleep(.2)
+    data = str(ser.readline())[2:][:-5].split(':')
+    try:
+        point = Point("sensor_data").tag('sensor', data[0].strip()).field(
+            "value", float(data[1].strip())).time(datetime.utcnow(), WritePrecision.NS)
+        print(data)
+        write_api.write(bucket, org, point)
+    except:
+        print("Error:", data)
